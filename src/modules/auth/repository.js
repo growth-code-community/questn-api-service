@@ -5,7 +5,6 @@ import { Token, User } from "./model.js";
 async function create(data) {
   try {
     return await User.create({
-      fullname: data.fullname,
       email: data.email,
       password: data.password,
     });

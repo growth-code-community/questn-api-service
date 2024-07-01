@@ -19,8 +19,8 @@ import bcrypt from "bcrypt";
 export async function signup(req, res, next) {
   try {
     const validatedData = await signUpSchema.validateAsync(req.body);
-    await repository.create(validatedData);
-    respond(res, 201, "Account created successfully.");
+    const newUser = await repository.create(validatedData);
+    respond(res, 201, "Account created successfully.", { user: newUser });
   } catch (err) {
     next(err);
   }
@@ -44,7 +44,7 @@ export async function login(req, res, next) {
     const refreshToken = generateRefreshToken(user.id);
     await repository.createToken(refreshToken);
     setCookie(res, refreshToken.token);
-    return respond(res, 200, "Login successfull", { access_token });
+    return respond(res, 200, "Login successfull", { user, access_token });
   } catch (err) {
     next(err);
   }

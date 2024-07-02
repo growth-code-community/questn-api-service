@@ -1,4 +1,8 @@
-import winston from "winston";
+import path from 'path';
+import winston from 'winston';
+
+// Resolve the log directory to be one level above `src`
+const logDir = path.resolve('src', '..', 'logs');
 
 /**
  * Configures a Winston logger with the following settings:
@@ -12,12 +16,12 @@ export const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
   transports: [
-    new winston.transports.File({ dirname: 'logs', filename: "error.log", level: "error" }),
-    new winston.transports.File({ dirname: 'logs', filename: "combined.log" }),
+    new winston.transports.File({ dirname: logDir, filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ dirname: logDir, filename: 'combined.log' }),
   ],
 });
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   logger.add(
     new winston.transports.Console({
       format: winston.format.colorize(),

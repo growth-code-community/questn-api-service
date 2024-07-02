@@ -1,8 +1,5 @@
 import { setCookie } from "../../helpers/cookie.js";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../../helpers/generateToken.js";
+import { generateTokens } from "../../helpers/generateToken.js";
 import { respond } from "../../utils/respond.js";
 import repository from "./repository.js";
 import { loginSchema, signUpSchema } from "./schema.js";
@@ -44,11 +41,10 @@ export async function login(req, res, next) {
       user.password
     );
     if (!isPasswordValid) return respond(res, 401, "Invalid credentials");
-    const { access_token } = generateAccessToken(user.id);
-    const refreshToken = generateRefreshToken(user.id);
+    const { refreshToken, accessToken } = generateTokens(user.id);
     await repository.createToken(refreshToken);
     setCookie(res, refreshToken.token);
-    return respond(res, 200, "Login successfull", { user, access_token });
+    return respond(res, 200, "Login successfull", { user, accessToken });
   } catch (err) {
     next(err);
   }

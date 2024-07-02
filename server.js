@@ -16,8 +16,6 @@ const port = process.env.PORT || 7000;
 
 ConnectToDatabase()
 
-// This is the base server file/
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

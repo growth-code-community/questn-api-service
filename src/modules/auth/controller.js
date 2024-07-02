@@ -38,8 +38,12 @@ export async function login(req, res, next) {
   try {
     const validatedData = await loginSchema.validateAsync(req.body);
     const user = await repository.fetchUserByEmail(validatedData.email);
-    if (!user || !(await bcrypt.compare(validatedData.password, user.password)))
-      return respond(res, 401, "Invalid credentials");
+    if (!user) return respond(res, 404, "User does not exist");
+    const isPasswordValid = await bcrypt.compare(
+      validatedData.password,
+      user.password
+    );
+    if (!isPasswordValid) return respond(res, 401, "Invalid credentials");
     const { access_token } = generateAccessToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
     await repository.createToken(refreshToken);
